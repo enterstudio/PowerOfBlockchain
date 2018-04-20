@@ -115,9 +115,11 @@ contract Tournament {
     }
 
 
-    function myResult() view public returns (string, uint, uint, uint, bool, uint) 
-    {
-        address player = msg.sender;
+    function myResult() view public returns (string, uint, uint, uint, bool, uint) {
+        return resultForPlayer(msg.sender);
+    }
+
+    function resultForPlayer(address player) view public returns (string, uint, uint, uint, bool, uint)  {
         string name = nameOf[player];
         uint entry = userToEntry[player];
         uint estimation = estimatedValue[entry];
