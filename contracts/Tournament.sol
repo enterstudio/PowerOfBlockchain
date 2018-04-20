@@ -15,6 +15,7 @@ contract Tournament {
     XCCToken public token;
     mapping (address => string) public nameOf;
     mapping (address => uint) private userToEntry;
+    mapping (address => uint) private rewarded;
     
     address[] players;
     uint[] public stake;
@@ -40,11 +41,12 @@ contract Tournament {
         token = XCCToken(XCCAddress);
         items.push(Item(5, "test1", 55));
         isEstimating = true;
+        answerIndex = 0;
         realValue = 42;
     }
 
 
-    function submit(uint value_, uint stake_, uint confidence_) public {
+    function addAnswer(uint value_, uint stake_, uint confidence_) public {
         require(stake_ > 0);
         require(stake_ <= token.balanceOf(msg.sender));
         require(confidence_ > 0);
@@ -55,15 +57,30 @@ contract Tournament {
         estimatedValue.push(value_);
 
         userToEntry[msg.sender] = answerIndex; 
-        players[answerIndex] = msg.sender; 
+        players.push(msg.sender); 
         answerIndex++;
         token.stake(msg.sender, stake_);
     }
 
     function calculateResults() public {
         // use https://github.com/numerai/contract ???
+        require(isEstimating == false);
+        // uint[] confidenceIndices;
+        for(uint i = 0; i< answerIndex; i++) {
+            uint estimation = estimatedValue[i];
+            address player = players[i];
 
-        
+            if(isEstimationValid(estimation,realValue)) {
+                uint conf = confidence[i];
+                // if(conf > confidenceIndices[0]){
+                    //order by confidence
+                // }
+                uint amount = stake[i]/conf;    
+                rewarded[player] = token.rewardStake(players[i],amount);//first come first served basis
+
+            }
+        }
+
         ResultsCalculated();
     }
 
@@ -83,6 +100,11 @@ contract Tournament {
         calculateResults();
     }
 
+    function restart() public {
+        isEstimating = true;
+        // calculateResults();
+    }
+
     function isEstimationValid(uint estimatedValue_, uint realValue_) pure public returns (bool){
         uint biggerValue = estimatedValue_ > realValue_ ? estimatedValue_ : realValue_;
         uint smallerValue = estimatedValue_ <= realValue_ ? estimatedValue_ : realValue_;
@@ -91,5 +113,18 @@ contract Tournament {
         return result;
     }
 
-    
+
+    function myResult() view public returns (string, uint, uint, uint, bool, uint) 
+    {
+        address player = msg.sender;
+        string name = nameOf[player];
+        uint entry = userToEntry[player];
+        uint estimation = estimatedValue[entry];
+        uint staked = stake[entry];
+        
+        bool valid = isEstimationValid(estimation,realValue);
+        uint rewardValue = rewarded[player];
+
+        return (name,estimation,realValue,staked,valid,rewardValue);
+    }
 }

@@ -16,6 +16,8 @@ contract XCCToken is MintableToken {
    */
     function XCCToken() public {
         totalSupply_ = INITIAL_SUPPLY;
+        stakePool = 1000;
+        totalSupply_ += stakePool;
         balances[msg.sender] = INITIAL_SUPPLY;
         Transfer(address(0), msg.sender, INITIAL_SUPPLY);
     }
@@ -46,10 +48,17 @@ contract XCCToken is MintableToken {
         _;
     }
 
-    function rewardStake(address player, uint amount) public {
-        require(stakePool > 0);
-        uint safeAmount = amount > stakePool ? amount : stakePool;
+    function rewardStake(address player, uint amount) public returns (uint){
+        if(stakePool == 0 ) {
+            return 0;
+        }
+        uint safeAmount = amount < stakePool ? amount : stakePool;
         balances[player] += safeAmount;
         stakePool -= safeAmount; 
+        return safeAmount;
+    }
+
+    function currentRewardPool() view returns (uint) {
+        return stakePool;
     }
 }
