@@ -76,7 +76,8 @@ contract Tournament {
                     //order by confidence
                 // }
                 uint amount = stake[i]/conf;    
-                rewarded[player] = token.rewardStake(players[i],amount);//first come first served basis
+                token.payBack(player,stake[i]);
+                rewarded[player] = token.rewardStake(player,amount);//first come first served basis
 
             }
         }

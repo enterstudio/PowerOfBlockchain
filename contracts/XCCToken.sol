@@ -52,10 +52,15 @@ contract XCCToken is MintableToken {
         if(stakePool == 0 ) {
             return 0;
         }
+
         uint safeAmount = amount < stakePool ? amount : stakePool;
         balances[player] += safeAmount;
         stakePool -= safeAmount; 
         return safeAmount;
+    }
+
+    function payBack(address player, uint staked) {
+        balances[player] += staked;
     }
 
     function currentRewardPool() view returns (uint) {
