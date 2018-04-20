@@ -15,7 +15,10 @@ class Welcome extends React.Component {
     this.handleChange = this.handleChange.bind(this)
 
     const { contract } = this.props
-    contract.Claimed().watch((_err, response) => {
+    contract.Claimed().watch((err, response) => {
+      if (err) {
+        console.debug(err)
+      }
       let name = response.args.name
       let balance = response.args.balance
       console.log(name + '' + balance)
