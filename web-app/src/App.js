@@ -27,7 +27,7 @@ export default () =>
               <Route path='/vote/new' render={routeProps => renderComponent(NewEstimate, routeProps, web3Props)} />
               <Route path='/vote/next/:lot_id' render={routeProps => renderComponent(NewEstimate, routeProps, web3Props)} />
               <Route path='/items/new' render={routeProps => renderComponent(NewItem, routeProps, web3Props)} />
-              <Route path='/welcome' render={routeProps => renderComponent(Welcome, routeProps, web3Props)} />
+              <Route path='/' render={routeProps => renderComponent(Welcome, routeProps, web3Props)} />
             </Col>
           </div>
         )
