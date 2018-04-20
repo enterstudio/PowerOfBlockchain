@@ -16,7 +16,6 @@ contract Tournament {
     mapping (address => string) public nameOf;
     mapping (address => uint) private userToEntry;
     mapping (address => uint) private rewarded;
-    
     address[] players;
     uint[] public stake;
     uint[] public confidence;
@@ -27,12 +26,12 @@ contract Tournament {
     uint private realValue;
 
     uint private answerIndex;
-    
+
     struct Item {
         uint itemId;
         string name;
         uint realValue;
-    }    
+    }
 
     Item[] public items;
 
@@ -101,19 +100,23 @@ contract Tournament {
         calculateResults();
     }
 
+
+    function APE1000(uint estimatedValue_, uint realValue_) pure public returns (uint){
+        uint biggerValue = estimatedValue_ > realValue_ ? estimatedValue_ : realValue_;
+        uint smallerValue = estimatedValue_ <= realValue_ ? estimatedValue_ : realValue_;
+        uint result = (1000 * (biggerValue - smallerValue)) / realValue_;
+        return result;
+    }
+
     function restart() public {
         isEstimating = true;
         // calculateResults();
     }
 
     function isEstimationValid(uint estimatedValue_, uint realValue_) pure public returns (bool){
-        uint biggerValue = estimatedValue_ > realValue_ ? estimatedValue_ : realValue_;
-        uint smallerValue = estimatedValue_ <= realValue_ ? estimatedValue_ : realValue_;
-        
-        bool result = (biggerValue - smallerValue) < (realValue_/5);
+        bool result = (APE1000(estimatedValue_,realValue_) / 1000) < (1/5);
         return result;
     }
-
 
     function myResult() view public returns (string, uint, uint, uint, bool, uint) {
         return resultForPlayer(msg.sender);
