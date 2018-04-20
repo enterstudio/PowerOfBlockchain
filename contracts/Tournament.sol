@@ -138,4 +138,8 @@ contract Tournament {
 
         return (name,estimation,realValue,staked,valid,rewardValue);
     }
+
+    function getBalance() view public returns (uint) {
+        return token.balanceOf(msg.sender);
+    }
 }

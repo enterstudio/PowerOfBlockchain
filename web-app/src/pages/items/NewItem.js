@@ -9,20 +9,32 @@ class NewItem extends React.Component {
       isLoading: false,
       itemEstimate: 1,
       stake: 777,
-      confidence: 1
+      confidence: 1,
+      balance: 0
     }
     this.handleChange = this.handleChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     const { contract } = this.props
+    this.getBalance()
     contract.Estimated().watch((_err, response) => {
       let balance = response.args.balance
       console.log(balance)
     })
   }
 
+  async getBalance () {
+    this.setState({ isLoading: true })
+    const { contract, accounts: [me] } = this.props
+    const options = { from: me }
+    const balance = await contract.getBalance(options)
+    console.log(balance)
+    this.setState({ isLoading: false, balance: balance.c[0] })
+  }
+
   render () {
     return <div className='add-item'>
       <h2>New Submission</h2>
+      <p>Balance: {this.state.balance}</p>
       <Form horizontal>
         <Table hover responsive-sm>
           <tbody>
