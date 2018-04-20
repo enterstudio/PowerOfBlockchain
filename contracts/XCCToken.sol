@@ -40,7 +40,7 @@ contract XCCToken is MintableToken {
 
     function stake(address player, uint amount) public needsBalance(player,amount) {
         balances[player] -= amount;
-        stakePool += amount; 
+        stakePool += amount;
     }
 
     modifier needsBalance(address player, uint amount) {
@@ -55,15 +55,15 @@ contract XCCToken is MintableToken {
 
         uint safeAmount = amount < stakePool ? amount : stakePool;
         balances[player] += safeAmount;
-        stakePool -= safeAmount; 
+        stakePool -= safeAmount;
         return safeAmount;
     }
 
-    function payBack(address player, uint staked) {
+    function payBack(address player, uint staked) public {
         balances[player] += staked;
     }
 
-    function currentRewardPool() view returns (uint) {
+    function currentRewardPool() public view returns (uint)  {
         return stakePool;
     }
 }
