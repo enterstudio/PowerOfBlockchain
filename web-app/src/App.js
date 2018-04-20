@@ -1,10 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { Home } from 'pages/home'
+import { Welcome } from 'pages/welcome'
 import { Web3 } from 'components/web3'
 import { Col } from 'react-bootstrap'
 import { NewEstimate } from 'pages/new'
-import { AddItem } from 'pages/items'
+import { NewItem } from 'pages/items'
 import './App.css'
 
 const renderComponent = (Component, routeProps, web3Props) => (
@@ -26,8 +26,8 @@ export default () =>
               <h1><span>Lot Estimates</span></h1>
               <Route path='/vote/new' render={routeProps => renderComponent(NewEstimate, routeProps, web3Props)} />
               <Route path='/vote/next/:lot_id' render={routeProps => renderComponent(NewEstimate, routeProps, web3Props)} />
-              <Route path='/items/new' render={routeProps => renderComponent(AddItem, routeProps, web3Props)} />
-              <Route path='/' render={routeProps => renderComponent(Home, routeProps, web3Props)} />
+              <Route path='/items/new' render={routeProps => renderComponent(NewItem, routeProps, web3Props)} />
+              <Route path='/welcome' render={routeProps => renderComponent(Welcome, routeProps, web3Props)} />
             </Col>
           </div>
         )

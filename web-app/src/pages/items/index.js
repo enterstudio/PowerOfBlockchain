@@ -1,1 +1,1 @@
-export { AddItem } from './AddItem'
+export { NewItem } from './NewItem'

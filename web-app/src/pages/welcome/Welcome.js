@@ -1,10 +1,10 @@
 import React from 'react'
 import {
-  Form, FormGroup, ControlLabel, FormControl, Col
+  Form, FormGroup, FormControl, Col
 } from 'react-bootstrap'
 import Button from 'react-bootstrap-button-loader'
 
-class Home extends React.Component {
+class Welcome extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -14,18 +14,18 @@ class Home extends React.Component {
     this.claim = this.claim.bind(this)
     this.handleChange = this.handleChange.bind(this)
 
-    const { contract, accounts: [me] } = this.props
-    contract.Claimed().watch( (err, response)=> {
-      let name = response.args.name;
-      let balance = response.args.balance;
-      console.log(name +"" +balance);
+    const { contract } = this.props
+    contract.Claimed().watch((_err, response) => {
+      let name = response.args.name
+      let balance = response.args.balance
+      console.log(name + '' + balance)
     })
   }
 
   render () {
     return <div className='home' >
       <h2>Welcome to Estimate Tournament</h2>
-      Type your name: 
+      Type your name:
       <Form horizontal>
         <FormGroup>
           <Col sm={5}>
@@ -34,15 +34,14 @@ class Home extends React.Component {
               name='name'
               value={this.state.name}
               placeholder='Enter your name here...'
-              onChange = {this.handleChange}
+              onChange={this.handleChange}
             />
           </Col>
         </FormGroup>
-          <Button
+        <Button
           loading={this.state.isLoading}
           onClick={this.claim}>Claim</Button>
-        </Form>
-
+      </Form>
 
     </div>
   }
@@ -54,11 +53,12 @@ class Home extends React.Component {
 
   async claim () {
     this.setState({ isLoading: true })
-    const { contract, accounts: [me] } = this.props
+    const { contract, accounts: [me], history } = this.props
     const options = { from: me, gas: 600000 }
     await contract.claim(this.state.name, options)
     this.setState({ isLoading: false })
+    history.push(`/items/new`)
   }
 }
 
-export { Home }
+export { Welcome }
