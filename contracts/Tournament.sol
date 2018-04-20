@@ -7,7 +7,7 @@ contract Tournament {
 
     event BeginVote(); // an event to inform clients about the begging of voting.
                        // can be triggered as browser Notifications
-    event Voted(); // an event informing about end of votes
+    event Estimated(uint balance); // an event informing about end of votes
     event ResultsCalculated(); // inform clients that results are calculated
 
     event Claimed(string name, uint balance);
@@ -55,10 +55,15 @@ contract Tournament {
         confidence.push(confidence_);
         estimatedValue.push(value_);
 
-        userToEntry[msg.sender] = answerIndex; 
-        players.push(msg.sender); 
+        userToEntry[msg.sender] = answerIndex;
+        players.push(msg.sender);
         answerIndex++;
         token.stake(msg.sender, stake_);
+
+        address addr = msg.sender;
+        uint balance = token.balanceOf(addr);
+
+        Estimated(balance);
     }
 
     function calculateResults() public {
@@ -74,7 +79,7 @@ contract Tournament {
                 // if(conf > confidenceIndices[0]){
                     //order by confidence
                 // }
-                uint amount = stake[i]/conf;    
+                uint amount = stake[i]/conf;
                 token.payBack(player,stake[i]);
                 rewarded[player] = token.rewardStake(player,amount);//first come first served basis
 
@@ -114,7 +119,7 @@ contract Tournament {
     }
 
     function isEstimationValid(uint estimatedValue_, uint realValue_) pure public returns (bool){
-        bool result = (APE1000(estimatedValue_,realValue_) / 1000) < (1/5);
+        bool result = APE1000(estimatedValue_,realValue_) < 200;
         return result;
     }
 
@@ -127,7 +132,7 @@ contract Tournament {
         uint entry = userToEntry[player];
         uint estimation = estimatedValue[entry];
         uint staked = stake[entry];
-        
+
         bool valid = isEstimationValid(estimation,realValue);
         uint rewardValue = rewarded[player];
 
